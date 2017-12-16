@@ -1,12 +1,12 @@
 {
-  "name": "Try freemarker",
+  "name": "Tryfreemarker",
   "description": "Freemarker online with nodeFtl",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "node-ftl": "~0.1.1",
-    "express": "~4.16.2"
+    "express": "^4.16.2",
+    "node-ftl": "^0.1.1"
   }
 }

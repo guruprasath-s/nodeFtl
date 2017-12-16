@@ -80,7 +80,7 @@
 				    	$('#result').val(data);
 				    }
 
-				    var errorCbk = function()
+				    var errorCbk = function(e,err)
 				    {
 				    	$('#result').removeClass('error');
 				    	$('#result').val("Something went wrong");
@@ -88,10 +88,10 @@
 
 				    $.ajax({
 				        method: "POST",
-				        url: "/api/ftl",
+				        url: "/api/ftl",				        
 				        data: JSON.stringify(request),
-				        headers: { "Content-Type":"application/json" },
-				        sucess: sucessCbk,
+				        contentType : "application/json; charset=utf-8",				        
+				        success : sucessCbk,
 				        error: errorCbk
 					});
 				}				
