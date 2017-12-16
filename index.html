@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<title>FreeMarker template with Node-Ftl</title>
+	<link href="https://fonts.googleapis.com/css?family=Basic|Pacifico|Source+Code+Pro" rel="stylesheet">
+	<style type="text/css">
+
+		body {
+		    margin: 0px;
+		}
+
+		div#main {
+		    display: block;
+		    padding: 10px;
+		    box-sizing: border-box;
+		    width: 100%;
+    		height: 100%;
+		}
+		textarea {
+		  display: block;
+		  margin-bottom: 20px;
+		  font-family: 'Source Code Pro', monospace;
+		  resize: none;
+		  width: 100%;
+		  height: 100%;
+		  box-sizing: border-box;
+		}
+
+		.resize-both {
+		  resize: both;
+		}
+
+		.buttonCont {
+		   	background-color: #ff5252;
+		   	width: 100px;
+		   	height: 30px;
+		   	font-size: 14px;
+		   	line-height: 30px;
+		   	text-align: center;
+		   	color: white;
+		   	font-family: 'Source Code Pro', monospace;
+	   }
+	   .labelTemplate,.labelData,.labelResult
+	   {
+	   	  	font-family: 'Pacifico', cursive;
+	   }
+	   h1
+	   {
+	   		font-family: 'Basic', sans-serif;
+	   		font-size: 25px;
+	   }
+	   .resultCont {
+	   		width: auto;
+	   		height: auto;
+	   		padding-top: 20px;
+	   }
+	   textarea#result.error {
+		    color: red;
+		    font-weight: bold;
+		}
+	</style>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+
+			$('.buttonCont').click(function()
+			{
+				if (checkError()) 
+				{
+			        var request = {
+				        "template": $("#template").val(),
+				        "dataModel": $("#dataModel").val()
+				    }
+
+				    var sucessCbk = function(data)
+				    {
+				    	$('#result').removeClass('error');
+				    	$('#result').val(data);
+				    }
+
+				    var errorCbk = function()
+				    {
+				    	$('#result').removeClass('error');
+				    	$('#result').val("Something went wrong");
+				    }
+
+				    $.ajax({
+				        method: "POST",
+				        url: "/api/ftl",
+				        data: JSON.stringify(request),
+				        headers: { "Content-Type":"application/json" },
+				        sucess: sucessCbk,
+				        error: errorCbk
+					});
+				}				
+			});
+
+			$('textarea#template').keydown(function (e) {
+		        if (e.keyCode == 13) {
+		            $('.buttonCont').trigger('click');
+		        }
+			});
+		});
+
+		function showResult(result,isError)
+		{
+			if (isError) {
+		        $("#result").addClass("error");
+		    } else {
+		        $("#result").removeClass("error");
+		    }
+		    $("#result").val(result);
+		}
+
+		function checkError()
+		{
+			if($.trim($("#template").val()) === "") {
+		        showResult("Template missing.",true);
+		        return false;
+			}
+			return true;
+		}
+	</script>
+</head>
+<body>
+	<div id="main">
+		<div class="header">
+			<h1>Try Freemarker</h1>
+		</div>
+		<div class="formCont">
+			<div class="labelCont">
+				<div class="labelTemplate">Template</div>
+			</div>
+			<textarea id="template" name="template" class="template resize-both" placeholder="Enter template" data-autosize-on="true"></textarea>
+			<div class="labelCont">
+				<div class="labelData">Data Model</div>
+			</div>
+			<textarea id="dataModel" name="dataModel" class="dataModel resize-both" placeholder="Enter data for template" data-autosize-on="true"></textarea>
+			<div class="buttonCont">Submit</div>
+			<div class="resultCont">
+				<div class="labelCont">
+					<div class="labelResult">Result</div>
+				</div>
+				<textarea id="result" name="result" class="result resize-both" placeholder="" data-autosize-on="true"></textarea>
+			</div>
+		</div>
+		<div class="footer">
+			<p></p>
+		</div>
+	</div>
+</body>
+</html>
